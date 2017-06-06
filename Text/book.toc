@@ -1,0 +1,41 @@
+\contentsline {chapter}{\numberline {1}Linux, Command Line and HPC Environment (Newcomer)}{4}
+\contentsline {section}{\numberline {1.1}Logging into remote systems}{4}
+\contentsline {section}{\numberline {1.2}Top 10 commands to learn}{4}
+\contentsline {subsection}{\numberline {1.2.1}ls}{5}
+\contentsline {subsection}{\numberline {1.2.2}cp}{6}
+\contentsline {subsection}{\numberline {1.2.3}rm}{6}
+\contentsline {subsection}{\numberline {1.2.4}mv}{6}
+\contentsline {subsection}{\numberline {1.2.5}pwd}{6}
+\contentsline {subsection}{\numberline {1.2.6}cd}{6}
+\contentsline {subsection}{\numberline {1.2.7}cat and tac}{7}
+\contentsline {subsection}{\numberline {1.2.8}more and less}{7}
+\contentsline {subsection}{\numberline {1.2.9}ln}{7}
+\contentsline {subsection}{\numberline {1.2.10}grep}{7}
+\contentsline {subsection}{\numberline {1.2.11}More commands}{8}
+\contentsline {section}{\numberline {1.3}Text Editors}{11}
+\contentsline {section}{\numberline {1.4}Working with a HPC cluster}{11}
+\contentsline {section}{\numberline {1.5}Managing inputs and outputs}{11}
+\contentsline {section}{\numberline {1.6}Transferring files between systems}{11}
+\contentsline {chapter}{\numberline {2}Scientific Workflows (Building, HPC Running, and post-processing)}{12}
+\contentsline {section}{\numberline {2.1}Building/installing software}{12}
+\contentsline {section}{\numberline {2.2}Using Python packages (pip and virtualenv)}{12}
+\contentsline {section}{\numberline {2.3}Basic Scripting}{12}
+\contentsline {section}{\numberline {2.4}Managing the 3 HPC variables (cores, memory and time)}{12}
+\contentsline {section}{\numberline {2.5}Job submission, monitoring, debugging and optimization}{12}
+\contentsline {section}{\numberline {2.6}Chaining Job with dependencies}{12}
+\contentsline {section}{\numberline {2.7}Executing many jobs at one, job arrays}{12}
+\contentsline {section}{\numberline {2.8}Parallel jobs (MPI)}{12}
+\contentsline {section}{\numberline {2.9}Plotting (gnuplot, xmgrace and matplotlib)}{12}
+\contentsline {chapter}{\numberline {3}A glimpse on advanced topics}{13}
+\contentsline {section}{\numberline {3.1}Advanced Bash/Python Scripting}{13}
+\contentsline {subsection}{\numberline {3.1.1}Regular Expressions with python}{13}
+\contentsline {section}{\numberline {3.2}Programming in C, Fortran and Python}{19}
+\contentsline {subsection}{\numberline {3.2.1}Sieve of Eratosthenes}{20}
+\contentsline {section}{\numberline {3.3}Version control with Github}{24}
+\contentsline {section}{\numberline {3.4}Optimization, Profiling and Debugging}{24}
+\contentsline {section}{\numberline {3.5}Parallel programming with MPI and OpenMP}{24}
+\contentsline {subsection}{\numberline {3.5.1}OpenMP}{24}
+\contentsline {subsection}{\numberline {3.5.2}MPI}{26}
+\contentsline {section}{\numberline {3.6}Creating Python Modules}{26}
+\contentsline {section}{\numberline {3.7}Test Driven Development}{26}
+\contentsline {section}{\numberline {3.8}Continuous Integration}{26}

@@ -1,0 +1,428 @@
+\chapter{Linux, Command Line and HPC Environment (Newcomer)}
+
+
+\section{Logging into remote systems}
+
+Currently WVU has two clusters for HPC, mountaineer and spruce. You can access them using SSH.
+SSH provides a secure channel over an unsecured network such as internet.
+Both Linux and macOS commonly include the SSH client by default. On Windows machines you can use a free application called PuTTY.
+
+To connect to Mountaineer use:
+
+\begin{lstlisting}[language=bash]
+ssh <username>@mountaineer.hpc.wvu.edu
+\end{lstlisting}
+
+For Spruce
+
+\begin{lstlisting}[language=bash]
+ssh <username>@spruce.hpc.wvu.edu
+\end{lstlisting}
+
+Once you enter on the system, you can start typing commands. You can open several connections simultaneously. Each connection is independent of each other.
+
+Power users can benefit from a terminal multiplexer such as tmux. tmux allows users to keep several virtual windows and panels open from a single connection. It offers also preserve the terminal status in case of disconnection from the server.
+
+To use tmux, first connect to the server and execute the command
+
+\begin{lstlisting}[language=bash]
+tmux
+\end{lstlisting}
+
+You can create new virtual windows with \texttt{CTRL-b c}, you move between windows with \texttt{CTRL-b n} and \texttt{CTRL-b p}. You can detach from your multiplexed terminals with \texttt{CTRL-b d}. 
+
+If for some reason you lost the connection to the server or you detached from the mulpiplexer all that you have to do to reconnect is to execute the command:
+
+\begin{lstlisting}[language=bash]
+tmux a
+\end{lstlisting}
+
+There are many options for using tmux, see the cheat cheat for some of them.
+
+\section{Top 10 commands to learn}
+
+When you interact with a HPC cluster your interaction is basically by executing commands on a terminal and editing text files. For newcomers using command lines could be a frustrating experience knowing that there are literally hundreds of commands. Certainly there are manuals for most of those commands, but they are of no use if you do not know which is the command you need to use for each situation. The good news is that you can do a lot of things with just a bunch of them and you can learn others in due time.
+
+This is a selection of the 10 most essential commands you need to learn.
+
+\subsection{ls}
+
+List all the files in a directory. Linux as many Operating Systems organize files in files and directories (also called folders). 
+
+\begin{lstlisting}[language=bash]
+$ ls
+file0a  file0b  folder1  folder2 link0a  link2a
+\end{lstlisting}
+
+Some terminal offer color output so you can differentiate normal files from folders. You can make the difference more clear with this
+
+\begin{lstlisting}[language=bash]
+$ ls -aCF
+./  ../  file0a  file0b  folder1/  folder2/ link0a@  link2a@
+\end{lstlisting}
+
+You will see a two extra directories \texttt{"."} and \texttt{".."}. Those are special folders that refer to the current folder and the folder up in the tree.
+Directories have the suffix \texttt{"/"}. Symbolic links, kind of shortcuts to other files or directories are indicated with the symbol \texttt{"@"}.
+
+Another option to get more information about the files in the system is:
+
+\begin{lstlisting}[language=bash]
+$ ls -al
+total 36
+drwxrwxr-x.  4 gufranco users     86 May 30 12:16 .
+drwxr-xr-x. 82 gufranco users  12288 May 30 12:05 ..
+-rw-rw-r--.  1 gufranco users      0 May 30 12:08 file0a
+-rw-rw-r--.  1 gufranco users      0 May 30 12:08 file0b
+drwxrwxr-x.  2 gufranco users     32 May 30 12:07 folder1
+drwxrwxr-x.  2 gufranco users     32 May 30 12:07 folder2
+lrwxrwxrwx.  1 gufranco users      6 May 30 12:16 link0a -> file0a
+lrwxrwxrwx.  1 gufranco users     14 May 30 12:16 link2a -> folder2/file2a
+\end{lstlisting}
+
+Those characters on the first column indicate the permissions. The first character will be "d" for directories, "l" for symbolic links and "-" for normal files. The next 3 characters are the permissions for "read", "write" and "execute" for the owner. The next 3 are for the group, and the final 3 are for others.
+The meaning of "execute" for a file indicates that the file could be a script or binary executable. For a directory it means that you can see its contents. 
+
+\subsection{cp}
+
+This command copies the contents of one file into another file. For example
+
+\begin{lstlisting}[language=bash]
+$ cp file0b file0c
+\end{lstlisting}
+
+\subsection{rm}
+
+This command deletes the contents of one file. For example
+
+\begin{lstlisting}[language=bash]
+$ rm file0c
+\end{lstlisting}
+
+There is no such thing like a trash folder on a HPC system. Deleting a file should be consider an irreversible operation.
+
+Recursive deletes can be done with
+
+\begin{lstlisting}[language=bash]
+$ rm -rf folder_to_delete
+\end{lstlisting}
+
+Be extremely cautious deleting files recursively. You cannot damage the system as the files that you do not own you cannot delete. However, you can delete all your files forever.
+
+\subsection{mv}
+
+This command moves a files from one directory to another. It also can be used to rename files or directories.
+
+\begin{lstlisting}[language=bash]
+$ mv file0b file0c
+\end{lstlisting}
+
+\subsection{pwd}
+
+It is easy to get lost when you move in complex directory structures. pwd will tell you the current directory.
+
+\begin{lstlisting}[language=bash]
+$ pwd
+/home/gufranco/Dropbox/SummerHandsOn
+\end{lstlisting}
+
+\subsection{cd}
+
+This command moves you to the directory indicated as an argument, if no argument is given, it returns to your home directory.
+
+\begin{lstlisting}[language=bash]
+$ cd folder1
+\end{lstlisting}
+
+\subsection{cat and tac}
+
+When you want to see the contents of a text file, the command cat displays the contents on the screen. It is also useful when you want to concatenate the contents of several files.
+
+\begin{lstlisting}[language=bash]
+$ cat INCAR 
+system   =  LiAu
+PREC      =  High
+NELMIN    =  8
+NELM      =  100
+EDIFF     =  1E-07
+...
+\end{lstlisting}
+
+To concatenate files you need to use the symbol \texttt{">"} indicating that you want to redirect the output of a command into a file
+
+\begin{lstlisting}[language=bash]
+$ cat file1 file2 file3 > file_all
+\end{lstlisting}
+
+The command tac shows the files in reverse starting from the last line back to the first one.
+
+\subsection{more and less}
+
+Sometimes text files, as those created as product of simulations are too large to be seen in one screen, the command "more" shows the files one screen at a time. The command \texttt{"less"} offers more functionality and should be the tool of choice to see large text files. 
+
+\begin{lstlisting}[language=bash]
+$ less OUTCAR
+\end{lstlisting}
+
+\subsection{ln}
+
+This command allow to create links between files. Used wisely could help you save time when traveling frequently to deep directories. By default it creates hard links. Hard links are like copies, but they make references to the same place in disk. Symbolic links are better in many cases because you can cross file systems and partitions. To create a symbolic link
+
+\begin{lstlisting}[language=bash]
+$ ln -s file1 link_to_file1
+\end{lstlisting}
+ 
+\subsection{grep}
+
+The grep command extract from its input the lines containing a specified string or regular expression. It is a powerful command for extracting specific information from large files. Consider for example
+
+\begin{lstlisting}[language=bash]
+$ grep TOTEN OUTCAR
+  free energy    TOTEN  =        68.29101273 eV
+  free energy    TOTEN  =       -13.46870926 eV
+  free energy    TOTEN  =       -18.78141268 eV
+  ...
+\end{lstlisting}
+  
+Regular expressions offers ways to specified text strings that could vary in several ways and allow commands such as grep to extract those strings efficiently. We will see more about regular expressions in third chapter.
+
+\subsection{More commands}
+
+The 10 commands above, will give you enough tools to move files around and travel the directory tree. There are more commands summarized 
+
+\begin{tabularx}{0.75\textwidth}{|l|X|}
+\hline
+\multicolumn{2}{|c|}{Output of entire files}\\ \hline
+cat  &                Concatenate and write files\\
+tac  &                Concatenate and write files in reverse\\
+nl  &                 Number lines and write files\\
+od  &                 Write files in octal or other formats\\
+base64  &             Transform data into printable data\\
+\hline
+\end{tabularx}
+
+\begin{tabularx}{0.75\textwidth}{|l|X|}
+\hline
+\multicolumn{2}{|c|}{Formatting file contents}\\ \hline
+fmt  &                Reformat paragraph text\\
+numfmt  &             Reformat numbers\\
+pr  &                 Paginate or columnate files for printing\\
+fold  &               Wrap input lines to fit in specified width\\
+\hline
+\end{tabularx}
+
+\begin{tabularx}{0.75\textwidth}{|l|X|}
+\hline
+\multicolumn{2}{|c|}{Output of parts of files}\\ \hline
+head  &               Output the first part of files\\
+tail  &               Output the last part of files\\
+split  &              Split a file into fixed-size pieces\\
+csplit  &             Split a file into context-determined pieces\\
+\hline
+\end{tabularx}
+
+\begin{tabularx}{0.75\textwidth}{|l|X|}
+\hline
+\multicolumn{2}{|c|}{Summarizing files}\\ \hline
+wc  &                 Print newline, word, and byte counts\\
+sum  &                Print checksum and block counts\\
+cksum  &              Print CRC checksum and byte counts\\
+md5sum  &             Print or check MD5 digests\\
+sha1sum  &            Print or check SHA-1 digests\\
+sha2 utilities &                Print or check SHA-2 digests\\
+\hline
+\end{tabularx}
+
+\begin{tabularx}{0.75\textwidth}{|l|X|}
+\hline
+\multicolumn{2}{|c|}{Operating on sorted files}\\ \hline
+sort  &               Sort text files\\
+shuf  &               Shuffle text files\\
+uniq  &               Uniquify files\\
+comm  &               Compare two sorted files line by line\\
+ptx  &                Produce a permuted index of file contents\\
+tsort  &              Topological sort\\
+\hline
+\end{tabularx}
+
+\begin{tabularx}{0.75\textwidth}{|l|X|}
+\hline
+\multicolumn{2}{|c|}{Operating on fields}\\ \hline
+cut  &                Print selected parts of lines\\
+paste  &              Merge lines of files\\
+join  &               Join lines on a common field\\
+\hline
+\end{tabularx}
+
+\begin{tabularx}{0.75\textwidth}{|l|X|}
+\hline
+\multicolumn{2}{|c|}{Operating on characters}\\ \hline
+tr  &                 Translate, squeeze, and/or delete characters\\
+expand  &             Convert tabs to spaces\\
+unexpand  &           Convert spaces to tabs\\
+\hline
+\end{tabularx}
+
+\begin{tabularx}{0.75\textwidth}{|l|X|}
+\hline
+\multicolumn{2}{|c|}{Directory listing}\\ \hline
+ls  &                 List directory contents\\
+dir  &                Briefly list directory contents\\
+vdir  &               Verbosely list directory contents\\
+dircolors  &          Color setup for 'ls'\\
+\hline
+\end{tabularx}
+
+\begin{tabularx}{0.75\textwidth}{|l|X|}
+\hline
+\multicolumn{2}{|c|}{Basic operations}\\ \hline
+cp  &                 Copy files and directories\\
+dd  &                 Convert and copy a file\\
+install  &            Copy files and set attributes\\
+mv  &                 Move (rename) files\\
+rm  &                 Remove files or directories\\
+shred  &              Remove files more securely\\
+\hline
+\end{tabularx}
+
+\begin{tabularx}{0.75\textwidth}{|l|X|}
+\hline
+\multicolumn{2}{|c|}{Special file types}\\ \hline
+link  &               Make a hard link via the link syscall\\
+ln  &                 Make links between files\\
+mkdir  &              Make directories\\
+mkfifo  &             Make FIFOs (named pipes)\\
+mknod  &              Make block or character special files\\
+readlink  &           Print value of a symlink or canonical file name\\
+rmdir  &              Remove empty directories\\
+unlink  &             Remove files via unlink syscall\\
+\hline
+\end{tabularx}
+
+\begin{tabularx}{0.75\textwidth}{|l|X|}
+\hline
+\multicolumn{2}{|c|}{Changing file attributes}\\ \hline
+chown  &              Change file owner and group\\
+chgrp  &              Change group ownership\\
+chmod  &              Change access permissions\\
+touch  &              Change file timestamps\\
+\hline
+\end{tabularx}
+
+\begin{tabularx}{0.75\textwidth}{|l|X|}
+\hline
+\multicolumn{2}{|c|}{Disk usage}\\ \hline
+df  &                 Report file system disk space usage\\
+du  &                 Estimate file space usage\\
+stat  &               Report file or file system status\\
+sync  &               Synchronize data on disk with memory\\
+truncate  &           Shrink or extend the size of a file\\
+\hline
+\end{tabularx}
+
+\begin{tabularx}{0.75\textwidth}{|l|X|}
+\hline
+\multicolumn{2}{|c|}{Printing text}\\ \hline
+echo  &               Print a line of text\\
+printf  &             Format and print data\\
+yes  &                Print a string until interrupted\\
+\hline
+\end{tabularx}
+
+\begin{tabularx}{0.75\textwidth}{|l|X|}
+\hline
+\multicolumn{2}{|c|}{Conditions}\\ \hline
+false  &              Do nothing, unsuccessfully\\
+true  &               Do nothing, successfully\\
+test  &               Check file types and compare values\\
+expr  &               Evaluate expressions\\
+tee  &                Redirect output to multiple files or processes\\
+\hline
+\end{tabularx}
+
+\begin{tabularx}{0.75\textwidth}{|l|X|}
+\hline
+\multicolumn{2}{|c|}{File name manipulation}\\ \hline
+basename  &           Strip directory and suffix from a file name\\
+dirname  &            Strip last file name component\\
+pathchk  &            Check file name validity and portability\\
+mktemp  &             Create temporary file or directory\\
+realpath  &           Print resolved file names\\
+\hline
+\end{tabularx}
+
+\begin{tabularx}{0.75\textwidth}{|l|X|}
+\hline
+\multicolumn{2}{|c|}{Working context}\\ \hline
+pwd  &                Print working directory\\
+stty  &               Print or change terminal characteristics\\
+printenv  &           Print all or some environment variables\\
+tty  &                Print file name of terminal on standard input\\
+\hline
+\end{tabularx}
+
+\begin{tabularx}{0.75\textwidth}{|l|X|}
+\hline
+\multicolumn{2}{|c|}{User information}\\ \hline
+id  &                 Print user identity\\
+logname  &            Print current login name\\
+whoami  &             Print effective user ID\\
+groups  &             Print group names a user is in\\
+users  &              Print login names of users currently logged in\\
+who  &                Print who is currently logged in\\
+\hline
+\end{tabularx}
+
+\begin{tabularx}{0.75\textwidth}{|l|X|}
+\hline
+\multicolumn{2}{|c|}{System context}\\ \hline
+arch  &               Print machine hardware name\\
+date  &               Print or set system date and time\\
+nproc  &              Print the number of processors\\
+uname  &              Print system information\\
+hostname  &           Print or set system name\\
+hostid  &             Print numeric host identifier\\
+uptime  &             Print system uptime and load\\
+\hline
+\end{tabularx}
+
+\begin{tabularx}{0.75\textwidth}{|l|X|}
+\hline
+\multicolumn{2}{|c|}{Modified command}\\ \hline
+chroot  &             Run a command with a different root directory\\
+env  &                Run a command in a modified environment\\
+nice  &               Run a command with modified niceness\\
+nohup  &              Run a command immune to hangups\\
+stdbuf  &             Run a command with modified I/O buffering\\
+timeout  &            Run a command with a time limit\\
+\hline
+\end{tabularx}
+
+\begin{tabularx}{0.75\textwidth}{|l|X|}
+\hline
+\multicolumn{2}{|c|}{Process control}\\ \hline
+kill  &               Sending a signal to processes\\
+\hline
+\end{tabularx}
+
+\begin{tabularx}{0.75\textwidth}{|l|X|}
+\hline
+\multicolumn{2}{|c|}{Delaying}\\ \hline
+sleep  &              Delay for a specified time\\
+\hline
+\end{tabularx}
+
+\begin{tabularx}{0.75\textwidth}{|l|X|}
+\hline
+\multicolumn{2}{|c|}{Numeric operations}\\ \hline
+factor  &             Print prime factors\\
+seq  &                Print numeric sequences\\
+\hline
+\end{tabularx} 
+
+
+\section{Text Editors}
+\section{Working with a HPC cluster}
+\section{Managing inputs and outputs}
+\section{Transferring files between systems}
+
+
