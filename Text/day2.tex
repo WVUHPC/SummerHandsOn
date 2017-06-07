@@ -2,6 +2,110 @@
 
 
 \section{Building/installing software}
+Sometimes, the modules available on the system are not enough or you need to compile the code by yourself to get some extra functionality not present on the current modules. 
+
+For this tutorial we will go on the whole process of compiling a code by yourself.
+We have selected fftw a well known library for computing Fast Fourier Transforms. 
+
+First, we go to the webpage of the FFTW code \url{http://www.fftw.org}
+
+Before downloading the code, create a directory on your home folder suitable for compiling codes, for example \verb|"$HOME/local/src"| and go into such directory
+
+Go to downloads and copy the link to the code that we will download and copy the link.
+
+On the terminal execute:
+
+\begin{lstlisting}
+wget http://www.fftw.org/fftw-3.3.6-pl2.tar.gz
+\end{lstlisting}
+
+Now that you have downloaded the code uncompress it using the command line
+
+\begin{lstlisting}
+tar -zxvf fftw-3.3.6-pl2.tar.gz
+\end{lstlisting}
+
+Now go into that directory. There is usually a file \texttt{README} or \texttt{INSTALL}. Those files will give you instructions on how to compile the code.
+
+It is a good idea to create a directory for building the code. Here we will use \verb|build_gcc|.
+Go into that directory and execute:
+
+\begin{lstlisting}
+../configure --help
+\end{lstlisting}
+
+You will see all the options available for configure the code. System administrators are usually conservative when choosing options for compilation, usually shifting the preference towards stability rather than performance. 
+Consider for example the case where we want the long-double precision library rather than the original double precision.
+The configuration line will be like this:
+
+\begin{lstlisting}
+../configure --prefix=$HOME/local --enable-long-double
+\end{lstlisting}
+
+The next step is compile the code with
+
+\begin{lstlisting}
+make
+\end{lstlisting}
+
+It is always good practice to test the compilation. Good software comes with tests that compare results with known results.
+
+\begin{lstlisting}
+make check
+\end{lstlisting}
+
+Finally, the installation is done with:
+
+\begin{lstlisting}
+make install
+\end{lstlisting}
+
+Now, we have fftw for long-double precision compiled and installed at \verb|$HOME/local|. Check by yourself the existence of folders such as lib and include, they contain both the libraries and headers needed to compile other programs using the library you just compiled.
+
+We have a small program to test the FFT library we just compiled. The code is as follows:
+
+\lstinputlisting[language=C]{../Day2_ScientificWorkflows/1.Building/example_fftl.c}
+
+To compile this code you have to be very explicit on the locations of the libraries and headers because they are no included in the environmental variables that gcc uses to search for them. The compilation line will be:
+
+\begin{lstlisting}
+gcc example_fftl.c -I$HOME/local/include -L$HOME/local/lib -lfftw3l 
+\end{lstlisting}
+
+When output is not declared like above, the executable is a file called \texttt{a.out}. 
+We have the advantage that we produce a static library for the long-double precision version of FFTW. The library is \texttt{libfftw3l.a}. The big advantage of static libraries is that the application can be certain that all its libraries are present and that they are the correct version. Being static for FFTW, our example simply runs with:
+
+\begin{lstlisting}
+./a.out
+\end{lstlisting}
+
+You can check library dependencies executing
+
+\begin{lstlisting}
+ldd ./a.out
+\end{lstlisting}
+
+Once executed you will have 2 files: \verb|Input_FFT.dat| 	and	\verb|Output_FFT.dat|, those files contain the original signal and its Fourier-Transform function. We create a small python script to help you visualize both functions. The functions are in complex space, so you are drawing Real and Imaginary parts and the magnitude of the signal.
+
+In the next section we will see how we can create modules that will facilitate compilation and execution of binaries that need these libraries.
+
+\subsection{Exercises:}
+
+\begin{itemize}
+\item Compile the FFTW in their single precision (float) and double precision versions. You can use the same place \verb|$HOME/local| as prefix for your installing the libraries. It is always good idea to clean the build directory before trying to compile a new version.
+
+\item Compile FFTW enabling the build of shared libraries.
+Try to compile the same code using them. Check dependencies with \texttt{ldd} and notice how the execution is not longer possible without explictly adding the environmental variable \verb|LD_LIBRARY_PATH| pointing to the location of the libraries.
+
+\end{itemize}
+
+
+
+This is a good opportunity to learn how to create private modules and use them the same way you use the system administrated ones.
+
+Environmental modules is 
+
+
 \section{Using Python packages (pip and virtualenv)}
 \section{Basic Scripting}
 \section{Managing the 3 HPC variables (cores, memory and time)}
