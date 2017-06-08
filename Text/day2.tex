@@ -1,5 +1,12 @@
 \chapter{Scientific Workflows (Building, HPC Running, and post-processing)}
 
+\section{Shell Scripting}
+
+\section{Python Scripting}
+
+\section{Using Python packages (pip and virtualenv)}
+
+\section{Plotting (gnuplot, xmgrace and matplotlib)}
 
 \section{Building/installing software}
 Sometimes, the modules available on the system are not enough or you need to compile the code by yourself to get some extra functionality not present on the current modules. 
@@ -69,7 +76,7 @@ We have a small program to test the FFT library we just compiled. The code is as
 To compile this code you have to be very explicit on the locations of the libraries and headers because they are no included in the environmental variables that gcc uses to search for them. The compilation line will be:
 
 \begin{lstlisting}
-gcc example_fftl.c -I$HOME/local/include -L$HOME/local/lib -lfftw3l 
+gcc example_fftl.c -I$HOME/local/include -L$HOME/local/lib -lfftw3l -lm
 \end{lstlisting}
 
 When output is not declared like above, the executable is a file called \texttt{a.out}. 
@@ -99,19 +106,31 @@ Try to compile the same code using them. Check dependencies with \texttt{ldd} an
 
 \end{itemize}
 
+\section{Environmental Modules}
+
+Environment Modules (EM) provides a way for the dynamic modification of a user's environment via modulefiles.
+The Environment Modules package is a tool that simplify shell initialization and lets users easily modify their environment during the session.
+To achieve its goal, EM uses files called modules located on special locations, you can load and unload modules, changing the environment variables.
+
+For this tutorial we will create a private repository for your own modules and we will create one module for the library we just create in our previous section.
+
+The firs step is decide a place where we we locate the modules. For this tutorial we will use \verb|$HOME/local/modules|. The location is arbitrary as soon as you can write in that directory. The first step is to create that directory.
+
+The next step is to setup the variable \texttt{MODULEPATH} on your \texttt{.bashrc} pointing to the place where you will add your modules. Open you favorite text editor and edit your \verb|$HOME/.bashrc|. You can add this at the very end of the file. Assuming you use bash:
+
+\begin{lstlisting}
+export MODULEPATH=$HOME/local/modules:$MODULEPATH
+\end{lstlisting}
+
+In order to make effective the changes you need to ``source" the file. incorporating the changes in your current session.
+
+\begin{lstlisting}
+source $HOME/.bashrc
+\end{lstlisting}
+
+Now it is time to create your first module. 
+
+\lstinputlisting[language=TCL]{../Day2_ScientificWorkflows/2.Modules/my_local_module}
 
 
-This is a good opportunity to learn how to create private modules and use them the same way you use the system administrated ones.
-
-Environmental modules is 
-
-
-\section{Using Python packages (pip and virtualenv)}
-\section{Basic Scripting}
-\section{Managing the 3 HPC variables (cores, memory and time)}
-\section{Job submission, monitoring, debugging and optimization}
-\section{Chaining Job with dependencies}
-\section{Executing many jobs at one, job arrays}
-\section{Parallel jobs (MPI)}
-\section{Plotting (gnuplot, xmgrace and matplotlib)}
 

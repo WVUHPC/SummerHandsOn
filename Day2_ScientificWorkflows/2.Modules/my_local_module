@@ -1,0 +1,31 @@
+#%Module1.0##########################################
+## Fast Fourier Transform Library
+##
+
+module-whatis	"Name: fftw"
+module-whatis	"Version: 3.3.6"
+module-whatis	"Category: C subroutine library"
+module-whatis	"Description: Library for computing the discrete Fourier transform (DFT)"
+module-whatis	"URL: http://fftw.org/"
+
+set  prefix     <ENTER_YOUR_HOME_DIR_HERE>/local
+
+# This is used during compilation for searching for libraries
+prepend-path  LIBRARY_PATH        ${prefix}/lib
+
+# This is used during execution for searching for libraries
+prepend-path  LD_LIBRARY_PATH     ${prefix}/lib
+
+# This is used during compilation for searching headers (*.h and *.mod)
+prepend-path  CPATH               ${prefix}/include
+
+# These two are usual places where man pages and info pages are located
+prepend-path  INFOPATH            ${prefix}/share/info:
+prepend-path  MANPATH             ${prefix}/share/man
+
+# This is a search path for searching for executables
+prepend-path  PATH                ${prefix}/bin
+
+# This is a helper tool used when compiling applications and libraries. 
+# It helps you insert the correct compiler options on the command line
+prepend-path  PKG_CONFIG_PATH     ${prefix}/lib/pkgconfig

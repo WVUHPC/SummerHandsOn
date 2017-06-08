@@ -7,7 +7,7 @@
 #define IMAG 1
 
 void create_input(fftwl_complex* signal) {
-  /* The input is a sum of several cosines ad sines with different frequencies
+  /* The input is a sum of several cosines and sines with different frequencies
    * and amplitudes
    */
   int i;

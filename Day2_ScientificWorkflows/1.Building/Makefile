@@ -8,3 +8,8 @@ double:
 
 long_double:
 	gcc example_fftl.c -l fftw3l -lm -o example_fftl
+
+pdfpage:
+	a2ps -BR -1 example_fftl.c -o page.ps
+	ps2pdf page.ps example_fftl.pdf
+	rm page.ps
