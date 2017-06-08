@@ -1,9 +1,10 @@
-\documentclass[letterpaper,oneside]{scrbook}
+\documentclass[letterpaper,oneside, notitlepage]{scrbook}
 \usepackage{listings}
 \usepackage{color}
 \usepackage{tabularx}
 \usepackage{graphicx}
 \usepackage{hyperref}
+\usepackage[top=1in, bottom=1.2in, left=1.2in, right=1.2in]{geometry}
 
 \definecolor{codegreen}{rgb}{0,0.6,0}
 \definecolor{codegray}{rgb}{0.5,0.5,0.5}
@@ -31,12 +32,12 @@
  
 \lstset{style=mystyle}
 
-\title{WVU High Performance Computing Seminars}
+\title{WVU Summer Hands-on Introduction to HPC}
 \author{Guillermo Avendano-Franco}
 
 \begin{document}
-%\maketitle
-%\tableofcontents
+\maketitle
+\tableofcontents
 
 \newpage
 \begin{center}
@@ -96,8 +97,8 @@
 \hline
 \end{tabularx}
 
-%\include{day1}
-%\include{day2}
-%\include{day3}
+\include{day1}
+\include{day2}
+\include{day3}
 
 \end{document}
