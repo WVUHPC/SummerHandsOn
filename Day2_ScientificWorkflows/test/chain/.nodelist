@@ -1,0 +1,2 @@
+group main
+host sgpc0001.hpc.wvu.edu ++cpus 16

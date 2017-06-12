@@ -1,0 +1,13 @@
+#submitting a job
+
+qsub run1.sh
+
+#checking job status
+
+qstat
+
+#or
+
+showq  # for all jobs
+
+showq -u 'username'  
