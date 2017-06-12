@@ -20,7 +20,6 @@ int main(int argc, char *argv[])
   MPI_Get_processor_name(hostname, &len);
   printf ("Number of tasks= %d My rank= %d Running on %s\n", numtasks,rank,hostname);
 
-
   // do some work with message passing 
 
 

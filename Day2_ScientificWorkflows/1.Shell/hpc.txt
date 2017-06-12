@@ -1,0 +1,84 @@
+say I have a file with thousands line and process them. I can not load the file on Excel and manipulate it. It just takes too long. Using shell scripts is the best way to manupulate files in Linux. If you have multiple files with thousads of lines it takes much longer to work with them. 
+
+mkdir
+#######################awk
+
+print
+#add a culumn to a file
+awk '{print NR,$1}' myfile > out
+#average of a column
+awk '{sum +=$1} END {if (NR>0) print sum/NR}' myfile > output.dat
+######################grep
+http://www.uccs.edu/~ahitchco/grep/
+
+grep 'apple' myfile.txt
+grep -i 'apple. myfile.txt  #case insensitive
+grep -v 'apple' myfile.txt  #invert the search
+grep -e 'apple' -e 'big' myfile.txt #also
+grep -c 'apple' myfile.txt  #count lines 
+grep -x 'apple' myfile.txt  #exact matches only 
+
+#4.log file
+
+grep ^Energy 4.log > e-test.dat
+
+####
+########################looping over files
+for i in {1..5}; do
+cat file_${i}.txt
+done
+
+
+
+#while loops
+while 
+   command list 1
+do   
+   command list
+done
+
+#example
+
+while
+((x<10))
+do
+echo loop $x; date >data.$x
+((x=x+1))
+done
+
+#for loops
+for <var> in <list>
+do
+command list
+done
+#example
+for f in one two theree
+do
+touch $f.dat
+done   
+
+#####################Bash scripts
+The most common used shell in Linux is called bash
+https://www.gnu.org/software/bash/manual/bashref.html
+
+bash scripts must start with #!/bin/bash
+
+make scripts executable with chmod +x myscript.sh
+
+run then with ./myscript
+
+
+#####################SOME PROBLEMS
+1. a) From 4.log file extract all lines containign 'PRESSURE' and print them in a file, out.dat
+   b) Extract the third comuln of the out.dat file and print it in out-clean.dat
+   c) Add a column to out-clean file and print the out put as out-time.dat
+   d) Plot the data in out-time.dat with the following command
+xmgrace out-time.dat
+
+2. a) create 20 files in current directory using a 'for loop
+   b) Make a bash script file that does the same job, change it's module and run it with './myscript.sh'
+   
+   
+
+
+

@@ -1,39 +1,41 @@
-PROGRAM DOT_PRODUCT
+program dot_product
 
-  INTEGER N, CHUNKSIZE, CHUNK, I, NN
-  PARAMETER (N=100)
-  PARAMETER (CHUNKSIZE=10)
-  REAL A(N), B(N), RESULT
+  integer n, chunksize, chunk, i, nn
+  parameter (n=10)
+  parameter (chunksize=10)
+  real a(n), b(n), result
 
   integer, allocatable :: seed(:)
 
-  call random_seed(size = NN)
-  allocate(seed(NN))
-  SEED(:)=0.0
+  call random_seed(size = nn)
+  allocate(seed(nn))
+  seed(:)=0.0
   call random_seed(put=seed)
 
-  !Some initializations
-  !$OMP  PARALLEL DO &
-  !$OMP  DEFAULT(SHARED) PRIVATE(I)
-  DO I = 1, N
-     CALL RANDOM_NUMBER(A(I))
-     CALL RANDOM_NUMBER(B(I))
-  ENDDO
-  !$OMP  END PARALLEL DO
+  !some initializations
+  !$omp  parallel do &
+  !$omp  default(shared) private(i)
+  do i = 1, n
+     call random_number(a(i))
+     call random_number(b(i))
+  enddo
+  !$omp  end parallel do
 
-  RESULT= 0.0
-  CHUNK = CHUNKSIZE
+  do i = 1, n
+     write(*,'(2F17.3)') a(i),b(i)
+  end do
 
-  !$OMP  PARALLEL DO &
-  !$OMP  DEFAULT(SHARED) PRIVATE(I) &
-  !$OMP  SCHEDULE(STATIC,CHUNK) &
-  !$OMP  REDUCTION(+:RESULT)
-  DO I = 1, N
-     RESULT = RESULT + (A(I) * B(I))
-  ENDDO
-  !$OMP  END PARALLEL DO
+  result= 0.0
+  chunk = chunksize
 
-  PRINT *, 'Final Result= ', RESULT
-  PRINT *, A
-  PRINT *, B
-END PROGRAM DOT_PRODUCT
+  !$omp  parallel do &
+  !$omp  default(shared) private(i) &
+  !$omp  schedule(static,chunk) &
+  !$omp  reduction(+:result)
+  do i = 1, n
+     result = result + (a(i) * b(i))
+  enddo
+  !$omp  end parallel do
+
+  print *, 'Dot product of dot(a,b) = ', result
+end program dot_product

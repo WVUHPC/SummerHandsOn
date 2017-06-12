@@ -1,8 +1,168 @@
 \chapter{A glimpse on advanced topics}
 
+
 \section{Advanced Bash/Python Scripting}
 
-Here we will cover a few more advanced topics not covered on our introductory scripting session. 
+Here we will cover a few more advanced topics not covered on our introductory scripting session. The examples here are oriented to usual operations that need to be done with the text output from several research codes.
+
+\subsection{Extracting text from output files (awk and grep)}
+
+Consider the data at \verb|Day3_AdvancedTopics/1.Scripting|.
+There is a compressed file called \texttt{goldnano3cu.tgz}.
+Uncompress the tar file with
+
+\begin{lstlisting}
+tar -zxvf goldnano3cu.tgz
+\end{lstlisting}
+
+The folders and files are from actual simulations of gold nanoclusters. You can see a sample from the first 10 simulations. The actual simulation was done with actually several hundred files like those.
+
+First, have a look to one of those files. For example \texttt{goldnano3cu/0/output.log}. Use \texttt{less} or your favorite text editor to get an idea about how the file actually looks. With less you can search for words typing \verb|/| and the pattern. Search for etot on that file.
+
+The first challenge is to know the value of the total energy per atom. You can see that such information is contained on lines such as 
+
+\begin{lstlisting}
+Time step =    232 SCF step =   3 etot/atom =    -277.072096
+\end{lstlisting}
+
+So you can use grep to extract those lines from the output
+
+\begin{lstlisting}
+grep "etot/atom" goldnano3cu/0/output.log
+\end{lstlisting}
+
+grep is a tool to extract lines from text output using patterns to identify the lines that we need to be shown.
+
+The output will look like this
+
+\begin{lstlisting}
+...
+   Time step =    251 SCF step =   3 etot/atom =    -277.070767
+   Time step =    252 SCF step =   3 etot/atom =    -277.070811
+   Time step =    253 SCF step =   3 etot/atom =    -277.070817
+   Time step =    254 SCF step =   4 etot/atom =    -277.070855
+   Time step =    255 SCF step =   3 etot/atom =    -277.070890
+   Time step =    256 SCF step =   3 etot/atom =    -277.070922
+   Time step =    257 SCF step =   3 etot/atom =    -277.070953
+   Time step =    258 SCF step =   3 etot/atom =    -277.070978
+\end{lstlisting}
+
+You can see the file again and noticing that after that line there are more information that could be interesting to see.
+Execute for example:
+
+\begin{lstlisting}
+grep -A 9 "etot/atom" goldnano3cu/0/output.log
+\end{lstlisting}
+
+Now, we are capturing the lines with \verb|'etot/atom'| and the next 9 lines AFTER. You can also use \texttt{-B} to get lines before the pattern.
+
+\begin{lstlisting}
+grep -B 1 -A 9 "etot/atom" goldnano3cu/0/output.log
+\end{lstlisting}
+
+The pattern so far is just a fixed string. grep was created to use far more complex patterns called regular expressions.
+
+Consider for example that we are searching for lines with the word "Time"
+
+\begin{lstlisting}
+grep "Time" goldnano3cu/0/output.log
+\end{lstlisting}
+
+But, now we realize that we do not want those lines that start with EBS, so we can indicate grep that the pattern matches only the word "Time" at the beggining of the line with some arbitrary number of spaces.
+
+\begin{lstlisting}
+grep "^ *Time" goldnano3cu/0/output.log
+\end{lstlisting}
+
+The following list shows the basic elements for regular expressions.
+
+\begin{lstlisting}
+. (dot) - a single character.
+?       - the preceding character matches 0 or 1 times only.
+*       - the preceding character matches 0 or more times.
++       - the preceding character matches 1 or more times.
+{n}     - the preceding character matches exactly n times.
+{n,m}   - the preceding character matches at least n times        
+          and not more than m times.
+[agd]   - the character is one of those included 
+          within the square brackets.
+[^agd]  - the character is not one of those included 
+          within the square brackets.
+[c-f]   - the dash within the square brackets operates 
+          as a range. In this case it means either the 
+          letters c, d, e or f.
+()      - allows us to group several characters to behave 
+          as one.
+|       - the logical OR operation.
+^       - matches the beginning of the line.
+$       - matches the end of the line.
+\end{lstlisting}
+
+Regular expressions is whole subject by itself and widely used not only by grep, but also many other languages such as awk, perl and python. We will continue the exploration using AWK.
+
+AWK is a programming language designed for text processing and typically used as a data extraction and reporting tool.
+In the 1990s, Perl became very popular, competing with AWK in the niche of Unix text-processing languages. Nowadays is Python the most popular language for many purposes including text processing, however for some basic operations is far easier to use a awk line or small script rather than a python one.
+
+Lets go back to our grep command for extracting the \verb|'etot/atom'|, lets use for example a line like this:
+
+\begin{lstlisting}
+grep "^ *Time" goldnano3cu/0/output.log
+\end{lstlisting}
+
+Lets suppose that we would like to get just the number of the iteration and the energy, for example to plot the two columns later on. You can use grep and awk connected with a pipe to produce the result. For example
+
+\begin{lstlisting}
+grep "^ *Time" goldnano3cu/0/output.log | awk '{print $4, $11}'
+\end{lstlisting}
+
+What we are doing here is letting grep to extract the lines that we want and using awk to just print the 4th and 11th column from those lines. Notice the \verb|","| after \verb|$4| otherwise the two numbers will be stick together.
+
+This is a very popular combination, using grep for line extraction and awk to print the output needed.
+
+AWK is able to reproduce the grep execution by itself, for example:
+
+\begin{lstlisting}
+awk '(/etot\/atom/) {print $0}' goldnano3cu/0/output.log 
+\end{lstlisting}
+
+And the extraction of the iteration number and energy can be done with:
+
+\begin{lstlisting}
+awk '(/etot\/atom/) {print $4, $11}' goldnano3cu/0/output.log 
+\end{lstlisting}
+
+One of the advantages of AWK is that variables are converted on the fly based on use. That allow us to change the value of the energy if we need for example converted to different units. For example:
+
+\begin{lstlisting}
+awk '(/etot\/atom/) {n=$11; print n*0.0367493, "Ha"}' goldnano3cu/0/output.log
+\end{lstlisting}
+
+This line also shows how you can create variables and use it them to manipulate the output.
+
+At this point is good to see AWK as an old fashioned C-like scripting language. Take for example this script:
+
+\lstinputlisting[language=C]{../Day3_AdvancedTopics/1.Scripting/awk_squares_cubes.awk}
+
+Lets go back to the output of the simulation. Imagine now that you would like to know the minimum, maximum and average energy per atom. The next script in AWK will do that:
+
+\lstinputlisting[language=C]{../Day3_AdvancedTopics/1.Scripting/awk_min_max_avg.awk}
+
+You can use it like this:
+
+\begin{lstlisting}
+awk -f awk_min_max_avg.awk goldnano3cu/0/output.log
+\end{lstlisting}
+
+In fact you can go further and process all the outputs from the 10 simulations like this:
+
+\begin{lstlisting}
+awk -f awk_min_max_avg.awk goldnano3cu/*/output.log
+\end{lstlisting}
+
+AWK is actually reading more than 7 million lines of output, extracting the relevant lines and computing the maximum, minimum and average from them.
+
+
+
 
 \subsection{Regular Expressions with python}
 
@@ -253,31 +413,7 @@ json.load(rf2)
 Finally, lets summarize all that we learn with this example.
 The whole script will be listed here:
 
-\begin{lstlisting}[language=Python, numbers=left]
-import re
-import numpy as np
-import json
-
-rf = open('OUTCAR')
-data = rf.read()
-
-# Parsing of the data
-kp=re.findall('k-point([\d\s]*):([\d\s.]*)band[\s\w.]*occupation([\s\d:.\-]*)\n\n', data)
-
-# Giving structure to the data
-ret=[]
-for ikp in kp:
-    entry={}
-    entry['number']= int(ikp[0])
-    entry['position']= [float(x) for x in ikp[1].split()]
-    entry['values']= np.array(ikp[2].split()[:48], dtype=float).reshape(-1,3).tolist()
-    ret.append(entry)
-
-# Storing the results into a JSON file
-wf = open('k-points.json','w')
-dp = json.dump(ret, wf, sort_keys=True, indent=4, separators=(',', ': '))
-wf.close()
-\end{lstlisting}
+\lstinputlisting[language=Python]{../Day3_AdvancedTopics/1.Scripting/python_re.py}
 
 \section{Programming in C, Fortran and Python}
 
@@ -359,6 +495,20 @@ using the command line:
 \begin{lstlisting}
 python sieve.py 100
 \end{lstlisting}
+
+\subsection{Matrix inversion}
+
+The purpose here is not to show the algorithm behind matrix inversion but to show how that could be achieve in several programming languages using external libraries, in particular we will show you the problem solved using LAPACK for Fortran, GSL for C and Numpy for python
+
+Lets start with the Fortran version. BLAS and LAPACK are a set of well known libraries to perform Linear Algebra calculations. This is a simple example of inverting a real matrix.
+
+
+\lstinputlisting[language=Fortran]{../Day3_AdvancedTopics/2.Programming/inverse_matrix.f90}
+
+
+
+
+
 
 
 %\begin{lstlisting}[language=Python, numbers=left]
