@@ -1,0 +1,14 @@
+#!/bin/sh
+
+#PBS -N LAMMPS
+#PBS -l nodes=1:ppn=1
+#PBS -l walltime=00:05:00
+#PBS -m ae
+#PBS -q debug
+
+module purge
+module load compilers/gcc/6.3.0 mpi/openmpi/2.0.2_gcc63 atomistic/lammps/2016.11.17
+
+cd $PBS_O_WORKDIR
+
+lmp_serial_png < in.crack
