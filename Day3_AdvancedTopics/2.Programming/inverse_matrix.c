@@ -12,29 +12,48 @@ int main(int argc, const char * argv[])
   // Create the matrix
   A = gsl_matrix_alloc(N, N);
   Ainverse = gsl_matrix_alloc(N, N);
-     
-  for(i=0; N-1; i++) {
-    for(j=0; N-1 ; j++) {
-      gsl_matrix_set(A,i,j,drand48());
+  p = gsl_permutation_alloc (N);
+
+  for(i=0; i<N; i++) {
+      for(j=0; j<N; j++) {
+        gsl_matrix_set(A,i,j,drand48());
     }
   }
 
   // Print the initial matrix
-  printf("The matrix\n");
-  gsl_matrix_fprintf(stdout, A, "%f");
+  printf("Initial Matrix\n");
+  for (i=0;i<N;i++)
+    {
+      for (j=0;j<N;j++)
+	     {
+	        printf("%16.4f ",gsl_matrix_get(A,i,j));
+        }
+      printf("\n");
+    }
+  printf("\n");
 
   status = gsl_linalg_LU_decomp(A, p, &s);
-  printf("Status of decomposition %d", status);
+  printf("Status of decomposition %d\n", status);
 
   status = gsl_linalg_LU_invert (A, p, Ainverse);
-  printf("Status of inversion %d", status);
+  printf("Status of inversion %d\n", status);
 
   // Print the initial matrix
-  printf("The matrix\n");
-  gsl_matrix_fprintf(stdout, A, "%f");
-    
+  printf("Inverse Matrix\n");
+  for (i=0;i<N;i++)
+    {
+      for (j=0;j<N;j++)
+	     {
+	        printf("%16.4f ",gsl_matrix_get(Ainverse,i,j));
+        }
+      printf("\n");
+    }
+  printf("\n");
+
   // Clean up
+  gsl_permutation_free (p);
   gsl_matrix_free(A);
+  gsl_matrix_free(Ainverse);
 
   return 0;
 }
